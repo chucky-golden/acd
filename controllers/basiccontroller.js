@@ -2,7 +2,7 @@ const Admin = require('../models/admin')
 const Evaluation = require('../models/evaluation')
 const Newsletter = require('../models/newsletters')
 const passwordHash = require('../middlewares/passwordencrypt')
-const { onlyMailExist, dateExist } = require('../middlewares/details')
+const { onlyMailExist, dateExist } = require('../middlewares/detailsExist')
 const { sendmail, mailGenerator } = require('../middlewares/mailer')
 const jwt = require('jsonwebtoken')
 
