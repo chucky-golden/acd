@@ -25,6 +25,7 @@ router.post('/editblog', auth, adminController.adminEditBlog)
 
 router.get('/team', teamController.getTeam)
 router.get('/team/:id', teamController.getTeamById)
+router.get('/deleteteam/:id', teamController.deleteTeamById)
 router.post('/addteam', auth, upload.single("file"), teamController.addTeam)
 router.post('/editteam', auth, upload.single("file"), teamController.editTeam)
 

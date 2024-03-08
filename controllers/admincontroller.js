@@ -129,7 +129,8 @@ const adminBlog = async (req, res) => {
         }
         
         let info = {
-            title: req.body.title
+            header: req.body.header,
+            link: req.body.link
         }
 
         const blog = await new Blog(info).save()
@@ -200,7 +201,8 @@ const adminEditBlog = async (req, res) => {
             const blog = await Blog.updateOne({ _id: req.body.blogid }, 
                 {
                     $set:{
-                        title: req.body.title
+                        header: req.body.header,
+                        link: req.body.link
                     }
                 }
             )
@@ -215,9 +217,9 @@ const adminEditBlog = async (req, res) => {
             const result = await Blog.findByIdAndDelete(req.body.blogid)
 
             if(result !== null){
-                res.json({ message: 'category deleted' })
+                res.json({ message: 'blog deleted' })
             }else{
-                res.json({ message: 'error deleting category' })
+                res.json({ message: 'error deleting blog' })
             }
 
         }

@@ -44,6 +44,27 @@ const getTeamById = async (req, res) => {
 
 
 
+// delete team member by id
+const deleteTeamById = async (req, res) => {
+    try{
+
+        let teamid = req.params.id
+        let team = await Team.findByIdAndDelete({ _id: teamid }) 
+        if(team !== null){
+            res.json({ message: 'team member deleted' })
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+
 
 // create team member
 const addTeam = async (req, res) => {
@@ -186,5 +207,6 @@ module.exports = {
     getTeam,
     getTeamById,
     addTeam,
-    editTeam
+    editTeam,
+    deleteTeamById
 }
