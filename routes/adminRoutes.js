@@ -32,6 +32,7 @@ router.post('/editteam', auth, upload.single("file"), teamController.editTeam)
 
 router.get('/getstats', datasController.adminGetAllStats)
 router.get('/getstats/:id', datasController.adminGetStatsById)
+router.get('/getfirststats', datasController.adminGetFirstStat)
 router.post('/addstats', auth, datasController.adminAddStats)
 router.post('/editstats', auth, datasController.adminEditStats)
 

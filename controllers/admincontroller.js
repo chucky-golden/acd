@@ -37,7 +37,9 @@ const adminGetCategory = async (req, res) => {
 
         let response = await Category.find().sort({ createdAt: -1 })
         if(response !== null){
-            res.json({ title: response })
+
+            const compressedData = await compressSent(response);
+            res.json({ data: compressedData })
         }
         else {
             res.json({ message: 'error handling request' })
@@ -155,7 +157,8 @@ const adminGetBlog = async (req, res) => {
 
         let response = await Blog.find().sort({ createdAt: -1 })
         if(response !== null){
-            res.json({ data: response })
+            const compressedData = await compressSent(response);
+            res.json({ data: compressedData })
         }
         else {
             res.json({ message: 'error handling request' })
@@ -238,7 +241,8 @@ const newsletters = async (req, res) => {
     try{
         let response = await Newsletter.find() 
         if(response !== null){
-            res.json({ data: response })
+            const compressedData = await compressSent(response);
+            res.json({ data: compressedData })
         }
         else {
             res.json({ message: 'error handling request' })

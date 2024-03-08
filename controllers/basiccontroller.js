@@ -221,7 +221,8 @@ const getEvalDate = async (req, res) => {
 
         let response = await Stats.Evaluation().sort({ createdAt: -1 })
         if(response !== null){
-            res.json({ data: response })
+            const compressedData = await compressSent(response);
+            res.json({ data: compressedData })
         }
         else {
             res.json({ message: 'error handling request' })

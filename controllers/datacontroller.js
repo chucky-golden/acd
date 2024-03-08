@@ -1,4 +1,5 @@
 const Stats = require('../models/stats')
+const { compressSent } = require('../middlewares/compressdata')
 
 
 
@@ -52,7 +53,9 @@ const adminGetAllStats = async (req, res) => {
 
         let response = await Stats.find().sort({ createdAt: -1 })
         if(response !== null){
-            res.json({ data: response })
+
+            const compressedData = await compressSent(response);
+            res.json({ data: compressedData })
         }
         else {
             res.json({ message: 'error handling request' })
@@ -71,9 +74,64 @@ const adminGetStatsById = async (req, res) => {
     try{
 
         let statid = req.params.id
+
         let response = await Stats.findOne({ _id: statid })
+
         if(response !== null){
-            res.json({ data: response })
+            let cat = response.category
+
+            let response2 = await Stats.find({ category: cat })
+            if(response2 !== null){
+
+                data = {
+                    stats: response,
+                    similar: response2
+                }
+
+                const compressedData = await compressSent(data);
+                res.json({ data: compressedData })
+
+            }else{
+                res.json({ message: 'error handling request' })
+            }
+           
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+
+
+// fetch stats
+const adminGetFirstStat = async (req, res) => {
+    try{
+        let response = await Stats.findOne()
+
+        if(response !== null){
+            let cat = response.category
+
+            let response2 = await Stats.find({ category: cat })
+            if(response2 !== null){
+
+                data = {
+                    stats: response,
+                    similar: response2
+                }
+
+                const compressedData = await compressSent(data);
+                res.json({ data: compressedData })
+
+            }else{
+                res.json({ message: 'error handling request' })
+            }
+           
         }
         else {
             res.json({ message: 'error handling request' })
@@ -145,5 +203,6 @@ module.exports = {
     adminAddStats,
     adminGetAllStats,
     adminGetStatsById,
-    adminEditStats
+    adminEditStats,
+    adminGetFirstStat
 }

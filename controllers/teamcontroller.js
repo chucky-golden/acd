@@ -10,7 +10,8 @@ const getTeam = async (req, res) => {
 
         let team = await Team.find().sort({ createdAt: -1 })
         if(team !== null){
-            res.json({ data: team })
+            const compressedData = await compressSent(team);
+            res.json({ data: compressedData })
         }
         else {
             res.json({ message: 'error handling request' })
