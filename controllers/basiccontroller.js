@@ -32,7 +32,7 @@ const adminRegister = async (req, res) => {
                     { id: admin._id },
                     process.env.SESSION_SECRET,
                     {
-                        expiresIn: "2h",
+                        expiresIn: "24h",
                     }
                 );
 
@@ -70,7 +70,7 @@ const adminlogin = async (req, res) => {
                     { id: admin._id },
                     process.env.SESSION_SECRET,
                     {
-                    expiresIn: "2h",
+                    expiresIn: "24h",
                     }
                 );
 
