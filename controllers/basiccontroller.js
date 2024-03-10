@@ -219,7 +219,7 @@ const suscribe = async (req, res) => {
 const getEvalDate = async (req, res) => {
     try{
 
-        let response = await Stats.Evaluation().sort({ createdAt: -1 })
+        let response = await Evaluation.find().sort({ createdAt: -1 })
         if(response !== null){
             const compressedData = await compressSent(response);
             res.json({ data: compressedData })
