@@ -2,6 +2,7 @@ const Category = require('../models/category')
 const Stats = require('../models/stats')
 const Newsletter = require('../models/newsletters')
 const Blog = require('../models/blog')
+const { compressSent } = require('../middlewares/compressdata')
 
 
 // add category

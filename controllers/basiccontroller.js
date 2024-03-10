@@ -5,6 +5,7 @@ const passwordHash = require('../middlewares/passwordencrypt')
 const { onlyMailExist, dateExist } = require('../middlewares/detailsExist')
 const { sendmail, mailGenerator } = require('../middlewares/mailer')
 const jwt = require('jsonwebtoken')
+const { compressSent } = require('../middlewares/compressdata')
 
 
 // vendors register

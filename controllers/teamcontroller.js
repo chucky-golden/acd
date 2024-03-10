@@ -1,7 +1,7 @@
 const Team = require('../models/teams')
-
 const cloudinary = require('../middlewares/cloudinary')
 const streamifier = require('streamifier')
+const { compressSent } = require('../middlewares/compressdata')
 
 
 // fetch team member
