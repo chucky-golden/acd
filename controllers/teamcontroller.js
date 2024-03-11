@@ -1,4 +1,5 @@
 const Team = require('../models/teams')
+const Logo = require('../models/logos')
 const cloudinary = require('../middlewares/cloudinary')
 const streamifier = require('streamifier')
 const { compressSent } = require('../middlewares/compressdata')
@@ -204,10 +205,129 @@ const editTeam = async (req, res) => {
 
 
 
+
+
+
+// fetch team member
+const getLogo = async (req, res) => {
+    try{
+
+        let logo = await Logo.find().sort({ createdAt: -1 })
+        if(logo !== null){
+            const compressedData = await compressSent(logo);
+            res.json({ data: compressedData })
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+// fetch team member by id
+const getLogoById = async (req, res) => {
+    try{
+
+        let logoid = req.params.id
+        let logo = await Logo.findOne({ _id: logoid }) 
+        if(logo !== null){
+            res.json({ data: logo })
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+
+// delete logo member by id
+const deleteLogoById = async (req, res) => {
+    try{
+
+        let logoid = req.params.id
+        let logo = await Logo.findByIdAndDelete({ _id: logoid }) 
+        if(logo !== null){
+            res.json({ message: 'logo member deleted' })
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+
+
+// create team member
+const addLogo = async (req, res) => {
+    try{
+        if(req.body.admin_email != req.admin.email){
+            return res.json({ message: 'invalid or expired token' })
+        }
+
+        if (req.file == undefined) {
+            return res.json({ message: 'please upload an image' })
+        }
+
+        // Convert the buffer to a readable stream
+        const bufferStream = streamifier.createReadStream(req.file.buffer);
+        // Create a stream from the buffer
+        const stream = cloudinary.uploader.upload_stream(async (error, result) => {
+            if (error) {
+                console.error(error);
+                return res.json({ message: 'Error uploading logo' });
+            } else {
+
+                let info = {
+                    img: result.secure_url,
+                    cloudinaryid: result.public_id,
+                };
+
+                const logo = await new Logo(info).save();
+                if (logo !== null) {
+                    return res.json({ message: 'logo added' });
+                } else {
+                    return res.json({ message: 'Error adding logo' });
+                }
+            }
+        });
+
+        // Pipe the buffer stream to the Cloudinary stream
+        bufferStream.pipe(stream);
+        
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+
+
+
+
+
 module.exports = {
     getTeam,
     getTeamById,
     addTeam,
     editTeam,
-    deleteTeamById
+    deleteTeamById,
+    addLogo,
+    deleteLogoById,
+    getLogoById,
+    getLogo
 }

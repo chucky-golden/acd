@@ -11,5 +11,8 @@ router.post('/suscribe', basicController.suscribe)
 
 router.get('/getevaldate', basicController.getEvalDate)
 
+router.get('/updatecount', basicController.updateCount)
+router.get('/getcount', basicController.getCount)
+
 
 module.exports = router

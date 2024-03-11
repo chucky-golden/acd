@@ -1,6 +1,7 @@
 const Admin = require('../models/admin')
 const Evaluation = require('../models/evaluation')
 const Newsletter = require('../models/newsletters')
+const Visit = require('../models/visitor')
 const passwordHash = require('../middlewares/passwordencrypt')
 const { onlyMailExist, dateExist } = require('../middlewares/detailsExist')
 const { sendmail, mailGenerator } = require('../middlewares/mailer')
@@ -238,6 +239,73 @@ const getEvalDate = async (req, res) => {
 
 
 
+// update daliy count
+const updateCount = async (req, res) => {
+    try{
+
+        const date = new Date();
+
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+
+        let currentDate = `${day}-${month}-${year}`;
+
+        let response = await Visit.findOne({ date: currentDate })
+
+        if(response !== null){
+            let count = Number(response.count)
+            let id = response._id
+            count += 1
+
+            const mycount = await Visit.update({ count:count }, { where: { _id: id }})
+            if(mycount !== null){
+                res.json({ message: 'daily count updated' })
+            }else{
+                res.json({ message: 'error updating daily count' })
+            }
+        }
+        else {
+            let info = {
+                date: currentDate,
+                count: '0'
+            }
+
+            const mycount = await new Visit(info).save()
+            if(mycount !== null){
+                res.json({ message: 'daily count added' })
+            }else{
+                res.json({ message: 'error adding daily count' })
+            }
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+// fetch daliy count
+const getCount = async (req, res) => {
+    try{
+
+        let response = await Visit.find().sort({ createdAt: -1 })
+        if(response !== null){
+            res.json({ data: response })
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+
 
 
 
@@ -248,5 +316,7 @@ module.exports = {
     adminReset,
     applyEval,
     getEvalDate,
-    suscribe
+    suscribe,
+    getCount,
+    updateCount
 }
