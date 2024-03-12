@@ -39,6 +39,7 @@ router.post('/addlogo', auth, upload.single("file"), teamController.addLogo)
 router.get('/getstats', datasController.adminGetAllStats)
 router.get('/getstats/:id', datasController.adminGetStatsById)
 router.get('/getfirststats', datasController.adminGetFirstStat)
+router.get('/deletestats/:id', datasController.adminDeleteStats)
 router.post('/addstats', auth, datasController.adminAddStats)
 router.post('/editstats', auth, datasController.adminEditStats)
 

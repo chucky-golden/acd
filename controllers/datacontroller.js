@@ -198,11 +198,31 @@ const adminEditStats = async (req, res) => {
 
 
 
+// delete stats by id
+const adminDeleteStats = async (req, res) => {
+    try{
+
+        let statsid = req.params.id
+        let stats = await Stats.findByIdAndDelete({ _id: statsid }) 
+        if(stats !== null){
+            res.json({ message: 'stats deleted' })
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
 
 module.exports = {
     adminAddStats,
     adminGetAllStats,
     adminGetStatsById,
     adminEditStats,
-    adminGetFirstStat
+    adminGetFirstStat,
+    adminDeleteStats
 }
