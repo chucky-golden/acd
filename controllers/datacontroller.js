@@ -155,7 +155,7 @@ const adminEditStats = async (req, res) => {
         const check = await Stats.findOne({ _id: req.body.statid }) 
         if (check !== null) {
                 
-            const stats = await Stats.updateOne({ _id: statid }, 
+            const stats = await Stats.updateOne({ _id: req.body.statid }, 
                 {
                     $set:{
                         name: req.body.name,
