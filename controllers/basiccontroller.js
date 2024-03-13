@@ -251,14 +251,21 @@ const updateCount = async (req, res) => {
 
         let currentDate = `${day}-${month}-${year}`;
 
-        let response = await Visit.findOne({ date: currentDate })
+        let response = await Visit.find({ date: currentDate })
 
         if(response !== null){
-            let count = Number(response.count)
+            let count = response.count
             let id = response._id
             count += 1
 
-            const mycount = await Visit.updateOne({ count:count }, { where: { _id: id }})
+            const mycount = await Visit.updateOne({ _id: id }, 
+                {
+                    $set:{
+                        count: count
+                    }
+                }
+            )
+
             if(mycount !== null){
                 res.json({ message: 'daily count updated' })
             }else{
@@ -268,7 +275,7 @@ const updateCount = async (req, res) => {
         else {
             let info = {
                 date: currentDate,
-                count: '0'
+                count: 0
             }
 
             const mycount = await new Visit(info).save()
