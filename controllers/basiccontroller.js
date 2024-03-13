@@ -258,7 +258,7 @@ const updateCount = async (req, res) => {
             let id = response._id
             count += 1
 
-            const mycount = await Visit.update({ count:count }, { where: { _id: id }})
+            const mycount = await Visit.updateOne({ count:count }, { where: { _id: id }})
             if(mycount !== null){
                 res.json({ message: 'daily count updated' })
             }else{
