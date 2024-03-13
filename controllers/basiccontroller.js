@@ -251,12 +251,11 @@ const updateCount = async (req, res) => {
 
         let currentDate = `${day}-${month}-${year}`;
 
-        let response = await Visit.find({ date: currentDate })
+        let response = await Visit.findOne({ date: currentDate })
 
         if(response !== null){
-            let count = response.count
+            let count = response.count + 1
             let id = response._id
-            count += 1
 
             const mycount = await Visit.updateOne({ _id: id }, 
                 {
