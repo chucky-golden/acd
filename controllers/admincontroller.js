@@ -165,7 +165,8 @@ const adminGetCategory = async (req, res) => {
             })
 
             const compressedData = await compressSent(categoriesDetails);
-            res.json({ data: compressedData })
+            // res.json({ data: compressedData })
+            res.json({ data: categoriesDetails })
         }
         else {
             res.json({ message: 'error handling request' })
