@@ -134,9 +134,9 @@ const editTestimonial = async (req, res) => {
                 const testimonial = await Testimonial.updateOne({ _id: testimonialid }, 
                     {
                         $set:{
-                            name: req.body.name,
+                            fullname: req.body.fullname,
                             label: req.body.label,
-                            comment: req.body.comment,
+                            message: req.body.message,
                             facebook: req.body.facebook,
                             instagram: req.body.instagram,
                             twitter: req.body.twitter,
@@ -157,18 +157,18 @@ const editTestimonial = async (req, res) => {
                 const stream = cloudinary.uploader.upload_stream(async (error, result) => {
                     if (error) {
                         console.error(error);
-                        return res.json({ message: 'Error uploading team member' });
+                        return res.json({ message: 'Error uploading testimonial pic' });
                     } else {
 
-                        const team = await Testimonial.updateOne({ _id: teamid }, 
+                        const testimonial = await Testimonial.updateOne({ _id: testimonialid }, 
                             {
                                 $set:{
 
                                     img: result.secure_url,
                                     cloudinaryid: result.public_id,
-                                    name: req.body.name,
+                                    fullname: req.body.fullname,
                                     label: req.body.label,
-                                    comment: req.body.comment,
+                                    message: req.body.message,
                                     facebook: req.body.facebook,
                                     instagram: req.body.instagram,
                                     twitter: req.body.twitter,
