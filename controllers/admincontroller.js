@@ -151,8 +151,6 @@ const adminGetCategory = async (req, res) => {
         if(categories !== null){
             const sub = await SubCategory.find()
 
-            console.log(sub);
-
             let categoriesDetails = []
 
             categories.forEach(data => {
@@ -162,15 +160,12 @@ const adminGetCategory = async (req, res) => {
                         details.push(sub[x])  
                     }
                 }
-
-                console.log(details);
                 let sendData = {...data._doc, subcategories: details }
                 categoriesDetails.push(sendData)
             })
 
             const compressedData = await compressSent(categoriesDetails);
-            // res.json({ data: compressedData })
-            res.json({ data: categoriesDetails })
+            res.json({ data: compressedData })
         }
         else {
             res.json({ message: 'error handling request' })
