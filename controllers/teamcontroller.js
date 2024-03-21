@@ -1,8 +1,203 @@
 const Team = require('../models/teams')
+const Testimonial = require('../models/testimonials')
 const Logo = require('../models/logos')
 const cloudinary = require('../middlewares/cloudinary')
 const streamifier = require('streamifier')
 const { compressSent } = require('../middlewares/compressdata')
+
+
+// fetch Testimonial
+const getTestimonial = async (req, res) => {
+    try{
+
+        let testimonial = await Testimonial.find().sort({ createdAt: -1 })
+        if(testimonial !== null){
+            const compressedData = await compressSent(testimonial);
+            res.json({ data: compressedData })
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+// fetch testimonial by id
+const getTestimonialById = async (req, res) => {
+    try{
+
+        let testimonialid = req.params.id
+        let testimonial = await Testimonial.findOne({ _id: testimonialid }) 
+        if(testimonial !== null){
+            res.json({ data: testimonial })
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+// delete testimonial by id
+const deleteTestimonialById = async (req, res) => {
+    try{
+
+        let testimonialid = req.params.id
+        let testimonial = await Testimonial.findByIdAndDelete({ _id: testimonialid }) 
+        if(testimonial !== null){
+            res.json({ message: 'testimonial deleted' })
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+// create team member
+const addTestimonial = async (req, res) => {
+    try{
+        if(req.body.admin_email != req.admin.email){
+            return res.json({ message: 'invalid or expired token' })
+        }
+
+        if (req.file == undefined) {
+            return res.json({ message: 'please upload an image' })
+        }
+
+        // Convert the buffer to a readable stream
+        const bufferStream = streamifier.createReadStream(req.file.buffer);
+        // Create a stream from the buffer
+        const stream = cloudinary.uploader.upload_stream(async (error, result) => {
+            if (error) {
+                console.error(error);
+                return res.json({ message: 'Error uploading testimonial' });
+            } else {
+
+                let info = {
+                    img: result.secure_url,
+                    cloudinaryid: result.public_id,
+                    fullname: req.body.fullname,
+                    label: req.body.label,
+                    message: req.body.message,
+                    facebook: req.body.facebook,
+                    instagram: req.body.instagram,
+                    twitter: req.body.twitter,
+                };
+
+                const testimonial = await new Testimonial(info).save();
+                if (testimonial !== null) {
+                    return res.json({ message: 'testimonial added' });
+                } else {
+                    return res.json({ message: 'Error adding testimonial' });
+                }
+            }
+        });
+
+        // Pipe the buffer stream to the Cloudinary stream
+        bufferStream.pipe(stream);
+        
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+
+// editing testimonial
+const editTestimonial = async (req, res) => {
+    try{
+        if(req.body.admin_email != req.admin.email){
+            return res.json({ message: 'invalid or expired token' })
+        }
+
+        const testimonialid = req.body.testimonialid
+
+        const check = await Testimonial.findOne({ _id: testimonialid }) 
+        if (check !== null) {
+                
+            if (req.file == undefined) {
+                
+                const testimonial = await Testimonial.updateOne({ _id: testimonialid }, 
+                    {
+                        $set:{
+                            name: req.body.name,
+                            label: req.body.label,
+                            comment: req.body.comment,
+                            facebook: req.body.facebook,
+                            instagram: req.body.instagram,
+                            twitter: req.body.twitter,
+                        }
+                    }
+                )
+                if(testimonial !== null){
+                    res.json({ message: 'testimonial updated' })
+                }else{
+                    res.json({ message: 'error updating testimonial' })
+                }
+                    
+            }else{
+
+                // Convert the buffer to a readable stream
+                const bufferStream = streamifier.createReadStream(req.file.buffer);
+                // Create a stream from the buffer
+                const stream = cloudinary.uploader.upload_stream(async (error, result) => {
+                    if (error) {
+                        console.error(error);
+                        return res.json({ message: 'Error uploading team member' });
+                    } else {
+
+                        const team = await Testimonial.updateOne({ _id: teamid }, 
+                            {
+                                $set:{
+
+                                    img: result.secure_url,
+                                    cloudinaryid: result.public_id,
+                                    name: req.body.name,
+                                    label: req.body.label,
+                                    comment: req.body.comment,
+                                    facebook: req.body.facebook,
+                                    instagram: req.body.instagram,
+                                    twitter: req.body.twitter,
+                                }
+                            }
+                        )
+                        if(testimonial !== null){
+                            res.json({ message: 'testimonial updated' })
+                        }else{
+                            res.json({ message: 'error updating testimonial' })
+                        }
+                    }
+                });
+
+                // Pipe the buffer stream to the Cloudinary stream
+                bufferStream.pipe(stream);
+
+            }
+            
+        }else{
+            res.json({ message: 'invalid id' })
+        }
+
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
 
 
 // fetch team member
@@ -93,6 +288,7 @@ const addTeam = async (req, res) => {
                     cloudinaryid: result.public_id,
                     name: req.body.name,
                     role: req.body.role,
+                    comment: req.body.comment,
                     facebook: req.body.facebook,
                     instagram: req.body.instagram,
                     twitter: req.body.twitter,
@@ -119,7 +315,7 @@ const addTeam = async (req, res) => {
 
 
 
-// editing stats
+// editing team
 const editTeam = async (req, res) => {
     try{
         if(req.body.admin_email != req.admin.email){
@@ -170,6 +366,7 @@ const editTeam = async (req, res) => {
                                     cloudinaryid: result.public_id,
                                     name: req.body.name,
                                     role: req.body.role,
+                                    comment: req.body.comment,
                                     facebook: req.body.facebook,
                                     instagram: req.body.instagram,
                                     twitter: req.body.twitter,
@@ -329,5 +526,10 @@ module.exports = {
     addLogo,
     deleteLogoById,
     getLogoById,
-    getLogo
+    getLogo,
+    getTestimonial,
+    getTestimonialById,
+    deleteTestimonialById,
+    addTestimonial,
+    editTestimonial
 }

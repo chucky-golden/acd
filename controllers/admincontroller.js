@@ -1,8 +1,119 @@
 const Category = require('../models/category')
-const Stats = require('../models/stats')
+const SubCategory = require('../models/subcategory')
 const Newsletter = require('../models/newsletters')
 const Blog = require('../models/blog')
 const { compressSent } = require('../middlewares/compressdata')
+
+
+// add subcategory
+const adminSubCategory = async (req, res) => {
+    try{
+        if(req.body.admin_email != req.admin.email){
+            return res.json({ message: 'invalid or expired token' })
+        }
+        
+        let info = {
+            categoryid: req.body.categoryid,
+            name: req.body.name
+        }
+
+        const subcategory = await new SubCategory(info).save()
+        if(subcategory !== null){
+            res.json({ message: 'subcategory uploaded' })
+        }else{
+            res.json({ message: 'error uploading subcategory' })
+        }
+        
+        
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+// fetch subcategory
+const adminGetSubCategory = async (req, res) => {
+    try{
+
+        let response = await SubCategory.find().sort({ createdAt: -1 })
+        if(response !== null){
+
+            const compressedData = await compressSent(response);
+            res.json({ data: compressedData })
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+// fetch subcategory by id
+const adminGetSubCategoryById = async (req, res) => {
+    try{
+        
+        let subcatid = req.params.id
+        let response = await SubCategory.findOne({ _id: subcatid }) 
+        if(response !== null){
+            res.json({ data: response })
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+// edit category
+const adminSubEditCat = async (req, res) => {
+    try{
+        if(req.body.admin_email != req.admin.email){
+            return res.json({ message: 'invalid or expired token' })
+        }
+
+        if(req.body.action == 'edit'){
+
+            const category = await SubCategory.updateOne({ _id: req.body.subcategoryid }, 
+                {
+                    $set:{
+                        name: req.body.name
+                    }
+                }
+            )
+    
+            if(category !== null){
+                res.json({ message: 'subcategory updated' })
+            }else{
+                res.json({ message: 'error updating subcategory' })
+            }
+
+        }else{
+            const result = await SubCategory.findByIdAndDelete(req.body.subcategoryid)
+
+            if(result !== null){
+                res.json({ message: 'subcategory deleted' })
+            }else{
+                res.json({ message: 'error deleting subcategory' })
+            }
+
+        }
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
 
 
 // add category
@@ -53,7 +164,7 @@ const adminGetCategory = async (req, res) => {
 }
 
 
-// fetch category
+// fetch category by id
 const adminGetCategoryById = async (req, res) => {
     try{
         
@@ -113,13 +224,6 @@ const adminEditCat = async (req, res) => {
         res.json({ message: 'error processing request' })
     }
 }
-
-
-
-
-
-
-
 
 
 
@@ -265,5 +369,9 @@ module.exports = {
     adminGetBlog,
     adminGetBlogById,
     adminEditBlog,
-    newsletters
+    newsletters,
+    adminSubCategory,
+    adminGetSubCategory,
+    adminGetSubCategoryById,
+    adminSubEditCat
 }
