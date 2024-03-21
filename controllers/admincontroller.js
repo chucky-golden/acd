@@ -158,7 +158,7 @@ const adminGetCategory = async (req, res) => {
             categories.forEach(data => {
                 let details = []
                 for(let x = 0; x < sub.length; x++){
-                    if(data._id === sub[x].categoryid){
+                    if(data._id.toString() === sub[x].categoryid){
                         details.push(sub[x])  
                     }
                 }
