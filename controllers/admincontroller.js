@@ -160,10 +160,7 @@ const adminGetCategory = async (req, res) => {
                         details.push(sub[x])  
                     }
                 }
-                let sendData = {
-                    category: data,
-                    subcategories: details
-                }
+                let sendData = {...data, subcategories: details }
                 categoriesDetails.push(sendData)
             })
 
