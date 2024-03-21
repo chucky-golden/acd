@@ -147,10 +147,27 @@ const adminCategory = async (req, res) => {
 const adminGetCategory = async (req, res) => {
     try{
 
-        let response = await Category.find().sort({ createdAt: -1 })
-        if(response !== null){
+        let categories = await Category.find().sort({ createdAt: -1 })
+        if(categories !== null){
+            const sub = await SubCategory.find()
 
-            const compressedData = await compressSent(response);
+            let categoriesDetails = []
+
+            categories.forEach(data => {
+                let details = []
+                for(let x = 0; x < sub.length; x++){
+                    if(data._id === sub[x].categoryid){
+                        details.push(sub[x])  
+                    }
+                }
+                let sendData = {
+                    category: data,
+                    subcategories: details
+                }
+                categoriesDetails.push(sendData)
+            })
+
+            const compressedData = await compressSent(categoriesDetails);
             res.json({ data: compressedData })
         }
         else {
