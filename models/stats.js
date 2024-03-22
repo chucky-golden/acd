@@ -46,31 +46,19 @@ const statsSchema = new Schema({
         type: String,
         required: true
     },
-    building: {
+    external: {
         type: String,
         required: true
     },
-    entrance: {
+    goods: {
         type: String,
         required: true
     },
-    room: {
+    fixtures: {
         type: String,
         required: true
     },
-    paths: {
-        type: String,
-        required: true
-    },
-    gtoilet: {
-        type: String,
-        required: true
-    },
-    atoilet: {
-        type: String,
-        required: true
-    },
-    lifts: {
+    amenities: {
         type: String,
         required: true
     },

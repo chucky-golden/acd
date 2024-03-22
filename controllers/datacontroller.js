@@ -22,13 +22,10 @@ const adminAddStats = async (req, res) => {
             point: req.body.point,
             emergency: req.body.emergency,
             srating: req.body.srating,
-            building: req.body.building,
-            entrance: req.body.entrance,
-            room: req.body.room,
-            paths: req.body.paths,
-            gtoilet: req.body.gtoilet,
-            atoilet: req.body.atoilet,
-            lifts: req.body.lifts,
+            external: req.body.external,
+            goods: req.body.goods,
+            fixtures: req.body.fixtures,
+            amenities: req.body.amenities,
         }
 
         const evaluation = await new Stats(info).save()
@@ -169,13 +166,10 @@ const adminEditStats = async (req, res) => {
                         point: req.body.point,
                         emergency: req.body.emergency,
                         srating: req.body.srating,
-                        building: req.body.building,
-                        entrance: req.body.entrance,
-                        room: req.body.room,
-                        paths: req.body.paths,
-                        gtoilet: req.body.gtoilet,
-                        atoilet: req.body.atoilet,
-                        lifts: req.body.lifts,
+                        external: req.body.external,
+                        goods: req.body.goods,
+                        fixtures: req.body.fixtures,
+                        amenities: req.body.amenities,
                     }
                 }
             )
