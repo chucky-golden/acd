@@ -12,6 +12,9 @@ const startServer = async () => {
 
     app.listen(PORT, () => {
         console.log(`app running... on port: ${PORT}`)
+        
+        // my cron job
+        require('./controllers/cron')        
     })
     .on('error', (err) => {
         console.log(err)
