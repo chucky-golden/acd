@@ -2,7 +2,7 @@ const axios = require('axios');
 const cron = require('node-cron');
 
 // Define the cron schedule (every 14 minutes)
-const cronExpression = '*/1 * * * *';
+const cronExpression = '*/14 * * * *';
 
 // Function to make the GET request
 const fetchData = async () => {
