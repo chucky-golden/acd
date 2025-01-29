@@ -36,6 +36,12 @@ router.get('/deletelogo/:id', teamController.deleteLogoById)
 router.post('/addlogo', auth, upload.single("file"), teamController.addLogo)
 
 
+router.get('/partners', teamController.getPartner)
+router.get('/partners/:id', teamController.getPartnerById)
+router.get('/deletepartners/:id', teamController.deletePartnerById)
+router.post('/addpartner', auth, upload.single("file"), teamController.addPartner)
+
+
 router.get('/getstats', datasController.adminGetAllStats)
 router.get('/getstats/:id', datasController.adminGetStatsById)
 router.get('/getfirststats', datasController.adminGetFirstStat)

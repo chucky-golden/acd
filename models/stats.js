@@ -62,6 +62,18 @@ const statsSchema = new Schema({
         type: String,
         required: true
     },
+    numberOfEmployees: {
+        type: String,
+        required: false
+    },
+    employessWithDisability: {
+        type: String,
+        required: false
+    },
+    policy: {
+        type: String,
+        required: false
+    },
 }, { timestamps: true })
 
 

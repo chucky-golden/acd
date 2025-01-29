@@ -1,6 +1,7 @@
 const Team = require('../models/teams')
 const Testimonial = require('../models/testimonials')
 const Logo = require('../models/logos')
+const Partner = require('../models/partner')
 const cloudinary = require('../middlewares/cloudinary')
 const streamifier = require('streamifier')
 const { compressSent } = require('../middlewares/compressdata')
@@ -515,6 +516,116 @@ const addLogo = async (req, res) => {
 
 
 
+// fetch team member
+const getPartner = async (req, res) => {
+    try{
+
+        let logo = await Partner.find().sort({ createdAt: -1 })
+        if(logo !== null){
+            const compressedData = await compressSent(logo);
+            res.json({ data: compressedData })
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+// fetch team member by id
+const getPartnerById = async (req, res) => {
+    try{
+
+        let logoid = req.params.id
+        let logo = await Partner.findOne({ _id: logoid }) 
+        if(logo !== null){
+            res.json({ data: logo })
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+
+// delete logo member by id
+const deletePartnerById = async (req, res) => {
+    try{
+
+        let logoid = req.params.id
+        let logo = await Partner.findByIdAndDelete({ _id: logoid }) 
+        if(logo !== null){
+            res.json({ message: 'Partner member deleted' })
+        }
+        else {
+            res.json({ message: 'error handling request' })
+        } 
+
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+
+
+// create team member
+const addPartner = async (req, res) => {
+    try{
+        if(req.body.admin_email != req.admin.email){
+            return res.json({ message: 'invalid or expired token' })
+        }
+
+        if (req.file == undefined) {
+            return res.json({ message: 'please upload an image' })
+        }
+
+        // Convert the buffer to a readable stream
+        const bufferStream = streamifier.createReadStream(req.file.buffer);
+        // Create a stream from the buffer
+        const stream = cloudinary.uploader.upload_stream(async (error, result) => {
+            if (error) {
+                console.error(error);
+                return res.json({ message: 'Error uploading logo' });
+            } else {
+
+                let info = {
+                    img: result.secure_url,
+                    cloudinaryid: result.public_id,
+                };
+
+                const logo = await new Partner(info).save();
+                if (logo !== null) {
+                    return res.json({ message: 'Partner added' });
+                } else {
+                    return res.json({ message: 'Error adding Partner' });
+                }
+            }
+        });
+
+        // Pipe the buffer stream to the Cloudinary stream
+        bufferStream.pipe(stream);
+        
+    }catch (error) {
+        console.log(error)
+        res.json({ message: 'error processing request' })
+    }
+}
+
+
+
+
+
 
 
 module.exports = {
@@ -531,5 +642,9 @@ module.exports = {
     getTestimonialById,
     deleteTestimonialById,
     addTestimonial,
-    editTestimonial
+    editTestimonial,
+    addPartner,
+    deletePartnerById,
+    getPartnerById,
+    getPartner
 }

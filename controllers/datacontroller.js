@@ -26,6 +26,9 @@ const adminAddStats = async (req, res) => {
             goods: req.body.goods,
             fixtures: req.body.fixtures,
             amenities: req.body.amenities,
+            numberOfEmployees: req.body.numberOfEmployees,
+            employessWithDisability: req.body.employessWithDisability,
+            policy: req.body.policy,
         }
 
         const evaluation = await new Stats(info).save()
@@ -170,6 +173,9 @@ const adminEditStats = async (req, res) => {
                         goods: req.body.goods,
                         fixtures: req.body.fixtures,
                         amenities: req.body.amenities,
+                        numberOfEmployees: req.body.numberOfEmployees,
+                        employessWithDisability: req.body.employessWithDisability,
+                        policy: req.body.policy,
                     }
                 }
             )
